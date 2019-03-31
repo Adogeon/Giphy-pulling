@@ -27,14 +27,32 @@ $(document).on("click",".topic-button",function() {
     $.ajax({url:querryURL, method:"GET"}).then(function (response) {
         var result = response.data;
         result.forEach(function(dataElement) {
-            console.log(dataElement)
             var gifDiv = $("<div>");
             gifDiv.attr("class","d-flex flex-column")
             var ratingP = $("<p>Rating: "+dataElement["rating"]+"</p>")
             var gifImg = $("<img>");
-            gifImg.attr("src",dataElement["images"]["fixed_height"]["url"])
+            gifImg.addClass("is-gif");
+            var fixed_img_url = dataElement["images"]["fixed_height_still"]["url"];
+            var gif_img_url = dataElement["images"]["fixed_height"]["url"];
+            gifImg.attr("data-fixed",fixed_img_url);
+            gifImg.attr("data-run",gif_img_url);
+            gifImg.attr("data-is-running",false);
+            gifImg.attr("src",fixed_img_url);
             $(gifDiv).append(ratingP).append(gifImg);
             $("#gif-area").append(gifDiv);
         })
     })
+})
+
+$(document).on("click",".is-gif",function() {
+    console.log(this);
+    if($(this).attr("data-is-running")==="true") {
+        $(this).attr("data-is-running","false")
+        var fixed_url = $(this).attr("data-fixed")
+        $(this).attr("src",fixed_url);
+    } else {
+        $(this).attr("data-is-running","true")
+        var running_url = $(this).attr("data-run")
+        $(this).attr("src",running_url);
+    }
 })
